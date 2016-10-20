@@ -1,0 +1,13 @@
+###
+# 全般的なファイル
+##
+.DS_Store
+.Trashes
+*~
+*.swp
+*.un~
+
+###
+# IDEA
+##
+.idea/
