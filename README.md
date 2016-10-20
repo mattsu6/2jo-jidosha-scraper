@@ -6,7 +6,7 @@ https://www.e-license.jp/el/nijo/
 # 使い方
 ```sh
 (you@2jo-jidosha-scraper)
-$ cp ./2jo-jidosha-scraper/config/config-sample.ini ~/2jo-jidosha-scraper/config/config.ini
-$ vi ./2jo-jidosha-scraper/config/config.ini #自分用の情報に編集する
-$ python ./2jo-jidosha-scraper/main.py
+$ cp ./nijo_scraper/config/config-sample.ini ./nijo_scraper/config/config.ini
+$ vi ./nijo_scraper/config/config.ini #自分用の情報に編集する
+$ python ./nijo_scraper/main.py
 ```
