@@ -5,6 +5,6 @@ import nijo_scraper.scraper as scraper
 if __name__ == '__main__':
   config = Config()
   http = NijoHttpHelper()
-  response = http.load_no_wish(config.user, config.password)
+  response = http.decode_for_jp(http.request_no_wish(config.user, config.password))
 
-  print(scraper.find_status0(http.decode(response)))
+  scraper.find_status3(response)

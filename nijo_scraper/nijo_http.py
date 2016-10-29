@@ -9,6 +9,12 @@ class NijoHttpHelper:
     }
 
   def get_cookies(self, user, password):
+    """
+    技能予約アプリにログインしてクッキーを取得する
+    :param user: ログインユーザ名
+    :param password: ログインパスワード
+    :return: 発行されたクッキー
+    """
     url = 'https://www.e-license.jp/el25/pc/p01a.action'
     payload = 'b.studentId={user}&' \
               'b.password={password}&' \
@@ -21,7 +27,13 @@ class NijoHttpHelper:
 
     return requests.post(url, data=payload, headers=self.headers).cookies
 
-  def load_no_wish(self, user, password):
+  def request_no_wish(self, user, password):
+    """
+    教官指名無し時のHTTPレスポンスを取得する
+    :param user: ログインユーザ名
+    :param password: ログインパスワード
+    :return: HTTPレスポンス
+    """
     cookies = self.get_cookies(user, password)
     url = 'https://www.e-license.jp/el25/pc/p03c.action'
     payload = 'b.schoolCd=MpUBkZwk%2BuA%2BbrGQYS%2B1OA%3D%3D&' \
@@ -38,5 +50,10 @@ class NijoHttpHelper:
     return requests.post(url, data=payload, cookies=cookies, headers=self.headers)
 
   @staticmethod
-  def decode(response):
+  def decode_for_jp(response):
+    """
+    日本語に対応したデコードを行う
+    :param response: HTTPレスポンス
+    :return: デコード後のHTTPレスポンス
+    """
     return response.content.decode('cp932')
