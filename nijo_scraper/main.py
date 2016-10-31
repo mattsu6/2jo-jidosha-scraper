@@ -7,4 +7,6 @@ if __name__ == '__main__':
   http = NijoHttpHelper()
   response = http.decode_for_jp(http.request_no_wish(config.user, config.password))
 
-  scraper.find_status3(response)
+  aa = scraper.find_book_status(response, scraper.Status.AVAILABLE)
+  print(aa)
+

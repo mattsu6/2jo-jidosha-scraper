@@ -1,20 +1,60 @@
 from lxml import html
+import datetime
+import re
 
-def find_status0(page):
-  return 'class="status0"' in page
-def find_status1(page):
+class BookStatus:
+  """予約状況を表現するクラス."""
+
+  def __init__(self, date, period, status):
+    """
+    コンストラクタ
+    :param date: 日付. datetime.date
+    :param period: 時限. int
+    :param status:状態. Status
+    """
+    self.date = date
+    self.period = period
+    self.status = status
+
+class Status:
+  """予約状況を表現する列挙型"""
+  FULL = 0
+  AVAILABLE = 1
+  RESERVED = 3
+
+  @staticmethod
+  def get_str(status):
+    return 'status' + str(status)
+
+def find_book_status(page, status=Status.AVAILABLE):
+  """
+  与えられたHTMLページの予約状況を確認して返す.
+  :param page: HTMLドキュメント
+  :param status: 確認したい予約状況の数字 Statusクラスを参照
+  :return: 予約状況を示すBookStatusのset
+  """
   tree = html.fromstring(page)
-  print(tree.xpath('//'))
-  return
-def find_status2(page):
-  return 'class="status2"' in page
 
+  bookStatusSet = set([])
+  for col, tr in enumerate(tree.xpath('//tr[@class="date"]')):
+    for row, td in enumerate(tr):
+      if td.attrib['class'] != Status.get_str(status):
+        continue
+      date = convertDate(tr.find('./td[@class="view"]').text_content())
+      bookStatusSet.add(BookStatus(date, row, 0))
 
-def find_status3(page):
-  tree = html.fromstring(page)
+  return bookStatusSet
 
-  for ():
-  print(tree.xpath('//td[@class="status3"]/text()'))
+def convertDate(dateStr, year = 2016):
+  """
+  10月10日 (木) のような文字列をdatetime.dateに変換する.
+  とりあえず，2016年で変換する
+  :param dateStr: 日付. ex'10月22日'
+  :return: 日付. datetime.date
+  """
+  pattern = re.compile(r'\s*(\d+)\D+(\d+)')
+  m = pattern.match(dateStr)
+  month = int(m.group(1))
+  day = int(m.group(2))
 
-  print(tree.xpath('//td[@class="status3"]/../td[1]/font/text()'))
-  print(tree.xpath('//td[@class="status3"]/../td[1]/font/text()'))
+  return datetime.date(year, month, day)
