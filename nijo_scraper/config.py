@@ -10,5 +10,5 @@ class Config:
     iniFile.read(Config.FILE_NAME)
 
     self.user = iniFile.get('settings', 'user')
-    self.password = iniFile.get('settings', 'password')
+    self.password = iniFile.get('settings', 'pass')
     self.mail = iniFile.get('settings', 'mail')
