@@ -40,12 +40,12 @@ def find_book_status(page, status=Status.AVAILABLE):
     for row, td in enumerate(tr):
       if td.attrib['class'] != Status.get_str(status):
         continue
-      date = convertDate(tr.find('./td[@class="view"]').text_content())
+      date = convert_date(tr.find('./td[@class="view"]').text_content())
       bookStatusSet.add(BookStatus(date, row, 0))
 
   return bookStatusSet
 
-def convertDate(dateStr, year = 2016):
+def convert_date(dateStr, year = 2016):
   """
   10月10日 (木) のような文字列をdatetime.dateに変換する.
   とりあえず，2016年で変換する

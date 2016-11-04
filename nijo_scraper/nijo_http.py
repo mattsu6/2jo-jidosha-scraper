@@ -1,18 +1,19 @@
 import requests
 
+
 class NijoHttpHelper:
   """二条のアプリにログインしたりするHttpリクエスト関連のクラス"""
 
-  def __init__(self):
+  def __init__(self, user, password):
     self.headers = {
       'content-type' : 'application/x-www-form-urlencoded',
     }
+    self.user = user
+    self.password = password
 
-  def get_cookies(self, user, password):
+  def get_cookies(self):
     """
     技能予約アプリにログインしてクッキーを取得する
-    :param user: ログインユーザ名
-    :param password: ログインパスワード
     :return: 発行されたクッキー
     """
     url = 'https://www.e-license.jp/el25/pc/p01a.action'
@@ -23,18 +24,16 @@ class NijoHttpHelper:
               'b.processCd=&' \
               'b.kamokuCd=&' \
               'b.schoolCd=MpUBkZwk%2BuA%2BbrGQYS%2B1OA%3D%3D&index=0&' \
-              'server='.format(user=user, password=password)
+              'server='.format(user=self.user, password=self.password)
 
     return requests.post(url, data=payload, headers=self.headers).cookies
 
-  def request_no_wish(self, user, password):
+  def request_no_wish(self):
     """
     教官指名無し時のHTTPレスポンスを取得する
-    :param user: ログインユーザ名
-    :param password: ログインパスワード
     :return: HTTPレスポンス
     """
-    cookies = self.get_cookies(user, password)
+    cookies = self.get_cookies()
     url = 'https://www.e-license.jp/el25/pc/p03c.action'
     payload = 'b.schoolCd=MpUBkZwk%2BuA%2BbrGQYS%2B1OA%3D%3D&' \
               'b.processCd=V&' \
@@ -48,6 +47,33 @@ class NijoHttpHelper:
               'b.groupCd=1&' \
               '%23instructor.cd=2'
     return requests.post(url, data=payload, cookies=cookies, headers=self.headers)
+
+  def request_register(self, date, period):
+    """
+    指定日時・時限で予約する.
+    :param date: 日時. datetime.date
+    :param period: 時限. int
+    :return:
+    """
+    cookies = self.get_cookies()
+    url = 'https://www.e-license.jp/el25/pc/p03a.action'
+    payload = 'b.schoolCd=MpUBkZwk%2BuA%2BbrGQYS%2B1OA%3D%3D&' \
+              'b.processCd=V&' \
+              'b.kamokuCd=0&' \
+              'b.lastScreenCd=&' \
+              'b.instructorTypeCd=0&' \
+              'b.dateInformationType={date}&' \
+              'b.infoPeriodNumber={period}&' \
+              'b.carModelCd=301&' \
+              'b.instructorCd=0&' \
+              'b.page=1&' \
+              'b.groupCd=1&' \
+              'b.changeInstructorFlg=1&' \
+              'b.nominationInstructorCd=0&' \
+              'upDate=1478173167645'.format(date=date.strftime('%Y%M%D'), period=period)
+    r = requests.post(url, data=payload, cookies=cookies, headers=self.headers)
+    print(r)
+    print(date.strftime('%Y%M%D'))
 
   @staticmethod
   def decode_for_jp(response):
