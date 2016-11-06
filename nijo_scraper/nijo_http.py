@@ -46,14 +46,14 @@ class NijoHttpHelper:
               'b.page=1&' \
               'b.groupCd=1&' \
               '%23instructor.cd=2'
-    return requests.post(url, data=payload, cookies=self.cookies, headers=self.headers)
+    return self.decode_for_jp(requests.post(url, data=payload, cookies=self.cookies, headers=self.headers))
 
   def request_register(self, date, period):
     """
     指定日時・時限で予約する.
     :param date: 日時. datetime.date
     :param period: 時限. int
-    :return:
+    :throw
     """
     url = 'https://www.e-license.jp/el25/pc/p03a.action'
     payload = 'b.schoolCd=MpUBkZwk%2BuA%2BbrGQYS%2B1OA%3D%3D&' \
@@ -69,13 +69,13 @@ class NijoHttpHelper:
               'b.groupCd=1&' \
               'b.changeInstructorFlg=1&' \
               'b.nominationInstructorCd=0&' \
-              'upDate=1478173167645'.format(date=date.strftime('%Y%M%D'), period=period)
-    r = requests.post(url, data=payload, cookies=self.cookies, headers=self.headers)
-    print(r)
-    print(date.strftime('%Y%M%D'))
+              'upDate=1478173167645'.format(date=date.strftime('%Y%m%d'), period=period)
+    response = self.decode_for_jp(requests.post(url, data=payload, cookies=self.cookies, headers=self.headers))
+    if '予約はできません' in response:
+      raise Error
 
-  @staticmethod
-  def decode_for_jp(response):
+
+  def decode_for_jp(self, response):
     """
     日本語に対応したデコードを行う
     :param response: HTTPレスポンス
