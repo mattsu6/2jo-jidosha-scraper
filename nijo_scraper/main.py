@@ -16,7 +16,10 @@ if __name__ == '__main__':
   logging.info('launch app...')
   config = Config()
   http = NijoHttpHelper(config.user, config.password)
-  http.request_register(datetime.date(2016, 11, 7), 1)
+  try:
+    http.request_register(datetime.date(2016, 11, 7), 1)
+  except EnvironmentError as e:
+    logging.info(e)
   # response = http.request_no_wish()
   #
   # context = scraper.find_book_status(response, scraper.Status.AVAILABLE)

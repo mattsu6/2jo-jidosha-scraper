@@ -1,6 +1,5 @@
 import requests
 
-
 class NijoHttpHelper:
   """二条のアプリにログインしたりするHttpリクエスト関連のクラス"""
 
@@ -53,7 +52,8 @@ class NijoHttpHelper:
     指定日時・時限で予約する.
     :param date: 日時. datetime.date
     :param period: 時限. int
-    :throw
+    :return: HTTPレスポンス
+    :exception EnvironmentError: 予約に失敗時
     """
     url = 'https://www.e-license.jp/el25/pc/p03a.action'
     payload = 'b.schoolCd=MpUBkZwk%2BuA%2BbrGQYS%2B1OA%3D%3D&' \
@@ -72,8 +72,10 @@ class NijoHttpHelper:
               'upDate=1478173167645'.format(date=date.strftime('%Y%m%d'), period=period)
     response = self.decode_for_jp(requests.post(url, data=payload, cookies=self.cookies, headers=self.headers))
     if '予約はできません' in response:
-      raise Error
+      raise EnvironmentError('Failed booking : ' + str(date) + ', ' + str(period))
+    return response
 
+  #def request_register_musen(self, date, period):
 
   def decode_for_jp(self, response):
     """
