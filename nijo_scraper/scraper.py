@@ -3,14 +3,14 @@ import datetime
 import re
 
 class BookStatus:
-  """予約状況を表現するクラス."""
+  """予約状況を表現するクラス. 二条予約サイトから取得した情報を表現"""
 
   def __init__(self, date, period, status):
     """
     コンストラクタ
     :param date: 日付. datetime.date
     :param period: 時限. int
-    :param status:状態. Status
+    :param status:空き状態. Status
     """
     self.date = date
     self.period = period

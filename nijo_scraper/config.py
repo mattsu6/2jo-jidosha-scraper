@@ -1,9 +1,10 @@
 import configparser
+import os
 
 class Config:
   """コンフィグファイルのロードと管理"""
   class __Config:
-    FILE_NAME = './configs/config.ini'
+    FILE_NAME = '{home}/configs/config.ini'.format(home=os.path.dirname(__file__))
     def __init__(self):
       iniFile = configparser.ConfigParser()
       iniFile.read(self.FILE_NAME)
@@ -16,6 +17,9 @@ class Config:
       self.nijo_db_name = iniFile.get('database', 'nijo.db.name')
       self.nijo_db_user = iniFile.get('database', 'nijo.db.user')
       self.nijo_db_pass = iniFile.get('database', 'nijo.db.pass')
+
+      self.mailer_name = iniFile.get('mailer', 'mailer.name')
+      self.mailer_pass = iniFile.get('mailer', 'mailer.pass')
 
   instance = None
 

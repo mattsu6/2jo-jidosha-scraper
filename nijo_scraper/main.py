@@ -1,26 +1,34 @@
-import datetime
 import logging
-
-from nijo_scraper.config import Config
-from nijo_scraper.nijo_http import NijoHttpHelper
-
+import os
+from config import Config
+from nijo_http import NijoHttpHelper
+from database import DBConnector
+import mailer
 
 def init_logger():
   logging.basicConfig(
-      filename='log/nijo.log',
+      filename='{home}/log/nijo.log'.format(home=os.path.dirname(__file__)),
       level=logging.INFO,
       format='%(asctime)s - %(levelname)s - %(message)s')
+  logging.getLogger("requests").setLevel(logging.WARNING)
+
 
 if __name__ == '__main__':
   init_logger()
-  logging.info('launch app...')
+  logging.info('Start app...')
   config = Config()
   http = NijoHttpHelper(config.user, config.password)
-  try:
-    http.request_register(datetime.date(2016, 11, 7), 1)
-  except EnvironmentError as e:
-    logging.info(e)
-  # response = http.request_no_wish()
+
+  db = DBConnector()
+  wait_books = db.find_book_list(1) #マジックナンバー.ユーザid. #todo:user_infoテーブルを参照するように変更
+  for wait_book in wait_books:
+    if http.request_register(wait_book.date, wait_book.period):
+      logging.info('Success for book: {date}, {period}'.format(date=wait_book.date, period=wait_book.period))
+      mailer.send_mail('Success for book: {date}, {period}'.format(date=wait_book.date, period=wait_book.period), config.mail)
+    else:
+      logging.info('Failed for book: {date}, {period}'.format(date=wait_book.date, period=wait_book.period))
+logging.info('End app...')
+      # response = http.request_no_wish()
   #
   # context = scraper.find_book_status(response, scraper.Status.AVAILABLE)
   #
