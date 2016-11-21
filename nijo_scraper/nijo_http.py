@@ -1,4 +1,5 @@
 import requests
+import logging
 
 class NijoHttpHelper:
   """二条のアプリにログインしたりするHttpリクエスト関連のクラス"""
@@ -74,6 +75,7 @@ class NijoHttpHelper:
       return False
     if '予約の空きがありません' in response:
       return False
+    logging.info(response)
     return True
 
   #def request_register_musen(self, date, period):

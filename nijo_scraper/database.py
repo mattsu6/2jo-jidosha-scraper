@@ -19,6 +19,7 @@ def create_connection(query):
     with connection.cursor() as cursor:
       cursor.execute(query(*args, **kargs))
       rows = cursor.fetchall()
+    connection.commit()
     connection.close()
     return rows
   return wrapper
@@ -48,6 +49,9 @@ class DBConnector:
         priority=row['priority']
       ))
     return sorted(wait_books, key=lambda wait_book: wait_book.priority, reverse=True)
+
+  def change_to_pause(self):
+    self.__execute('update book set status="PAUSE"')
 
 class WaitBook:
   """予約待ち状況を表現するクラス"""

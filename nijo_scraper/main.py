@@ -25,9 +25,11 @@ if __name__ == '__main__':
     if http.request_register(wait_book.date, wait_book.period):
       logging.info('Success for book: {date}, {period}'.format(date=wait_book.date, period=wait_book.period))
       mailer.send_mail('Success for book: {date}, {period}'.format(date=wait_book.date, period=wait_book.period), config.mail)
+      db.change_to_pause()
+
     else:
       logging.info('Failed for book: {date}, {period}'.format(date=wait_book.date, period=wait_book.period))
-logging.info('End app...')
+  logging.info('End app...')
       # response = http.request_no_wish()
   #
   # context = scraper.find_book_status(response, scraper.Status.AVAILABLE)

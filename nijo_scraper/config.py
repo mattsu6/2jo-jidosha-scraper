@@ -1,5 +1,7 @@
 import configparser
 import os
+import logging
+import traceback
 
 class Config:
   """コンフィグファイルのロードと管理"""
@@ -24,7 +26,14 @@ class Config:
   instance = None
 
   def __init__(self):
-    if not Config.instance:
-      Config.instance = Config.__Config()
+    try:
+      if not Config.instance:
+        Config.instance = Config.__Config()
+        logging.info('Loaded Config')
+    except:
+      tb = traceback.format_exc()
+      logging.error(tb)
+      logging.error('{home}/configs/config.ini'.format(home=os.path.dirname(__file__)))
+
   def __getattr__(self, item):
     return getattr(self.instance, item)
